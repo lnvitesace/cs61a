@@ -1,2 +1,2 @@
-# ca61a
+# cs61a
 Record my cs61a study experience 
