@@ -187,6 +187,9 @@ def play(strategy0, strategy1, score0=0, score1=0, dice=six_sided,
             score1 += take_turn(roll_number, score0, dice)
         else:
             score0 += take_turn(roll_number, score1, dice)
+
+        say = say(score0, score1)   #PROBLEM 6
+
         if extra_turn(score(who), score(not who)):
             continue
         who = other(who)
@@ -194,6 +197,7 @@ def play(strategy0, strategy1, score0=0, score1=0, dice=six_sided,
     # (note that the indentation for the problem 6 prompt (***YOUR CODE HERE***) might be misleading)
     # BEGIN PROBLEM 6
     "*** YOUR CODE HERE ***"
+    "LINE 191"
     # END PROBLEM 6
     return score0, score1
 
@@ -278,6 +282,21 @@ def announce_highest(who, last_score=0, running_high=0):
     assert who == 0 or who == 1, 'The who argument should indicate a player.'
     # BEGIN PROBLEM 7
     "*** YOUR CODE HERE ***"
+    def say(score0, score1):
+        if who:
+            ds = score1 - last_score
+            if ds > running_high:
+                print(ds, 'point(s)! The most yet for Player 1')
+                return announce_highest(who, score1, ds)
+            return announce_highest(who, score1, running_high)
+            
+        else:
+            ds = score0 - last_score
+            if ds > running_high:
+                print(ds, 'point(s)! The most yet for Player 0')
+                return announce_highest(who, score0, ds)
+            return announce_highest(who, score0, running_high)
+    return say
     # END PROBLEM 7
 
 
@@ -318,6 +337,14 @@ def make_averaged(original_function, trials_count=1000):
     """
     # BEGIN PROBLEM 8
     "*** YOUR CODE HERE ***"
+    def average(*args):
+        total = 0
+        i = trials_count
+        while i != 0:
+            total += original_function(*args)
+            i -= 1
+        return total / trials_count
+    return average
     # END PROBLEM 8
 
 
@@ -332,6 +359,17 @@ def max_scoring_num_rolls(dice=six_sided, trials_count=1000):
     """
     # BEGIN PROBLEM 9
     "*** YOUR CODE HERE ***"
+    average_score = make_averaged(roll_dice, trials_count)
+    i = 1
+    max_num = 1
+    max_avg = 0
+    while i <= 10:
+        avg = average_score(i, dice)
+        if avg > max_avg:
+            max_avg = avg
+            max_num = i
+        i += 1
+    return max_num
     # END PROBLEM 9
 
 
@@ -360,17 +398,17 @@ def run_experiments():
         six_sided_max = max_scoring_num_rolls(six_sided)
         print('Max scoring num rolls for six-sided dice:', six_sided_max)
 
-    if False:  # Change to True to test always_roll(8)
-        print('always_roll(8) win rate:', average_win_rate(always_roll(8)))
+    if True:  # Change to True to test always_roll(4)
+        print('always_roll(4) win rate:', average_win_rate(always_roll(4)))
 
-    if False:  # Change to True to test bacon_strategy
+    if True:  # Change to True to test bacon_strategy
         print('bacon_strategy win rate:', average_win_rate(bacon_strategy))
 
-    if False:  # Change to True to test extra_turn_strategy
+    if True:  # Change to True to test extra_turn_strategy
         print('extra_turn_strategy win rate:',
               average_win_rate(extra_turn_strategy))
 
-    if False:  # Change to True to test final_strategy
+    if True:  # Change to True to test final_strategy
         print('final_strategy win rate:', average_win_rate(final_strategy))
 
     "*** You may add additional experiments as you wish ***"
@@ -381,7 +419,7 @@ def bacon_strategy(score, opponent_score, cutoff=8, num_rolls=6):
     rolls NUM_ROLLS otherwise.
     """
     # BEGIN PROBLEM 10
-    return 6  # Replace this statement
+    return 0 if free_bacon(opponent_score) >= cutoff else num_rolls  # Replace this statement
     # END PROBLEM 10
 
 
@@ -391,11 +429,11 @@ def extra_turn_strategy(score, opponent_score, cutoff=8, num_rolls=6):
     Otherwise, it rolls NUM_ROLLS.
     """
     # BEGIN PROBLEM 11
-    return 6  # Replace this statement
+    return 0 if extra_turn(score + free_bacon(opponent_score),opponent_score) else bacon_strategy(score, opponent_score, cutoff, num_rolls)  # Replace this statement
     # END PROBLEM 11
 
 
-def final_strategy(score, opponent_score):
+def final_strategy(score, opponent_score):  #Haven't finished yet😆
     """Write a brief description of your final strategy.
 
     *** YOUR DESCRIPTION HERE ***
